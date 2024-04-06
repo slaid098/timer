@@ -23,7 +23,7 @@ pub fn run_timer(config: Config, running: Arc<AtomicBool>, playing: Arc<AtomicBo
                 if let Err(e) = crate::sound::play_sound(playing_clone.clone()) {
                     eprintln!("Ошибка при воспроизведении звука: {}", e);
                 }
-                thread::sleep(Duration::from_secs(5));
+                thread::sleep(Duration::from_secs(1));
             }
         });
 
