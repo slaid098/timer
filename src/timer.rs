@@ -5,9 +5,7 @@ use std::time::{Duration, Instant};
 use std::io::{self, Write};
 
 // Теперь функция принимает второй аргумент: running
-pub fn run_timer(config: Config, running: Arc<AtomicBool>) {
-    let playing = Arc::new(AtomicBool::new(false));
-
+pub fn run_timer(config: Config, running: Arc<AtomicBool>, playing: Arc<AtomicBool>) {
     while running.load(Ordering::SeqCst) {
         println!("Таймер запущен на {} секунд.", config.duration_secs);
         visualize_timer(config.duration_secs, running.clone());
@@ -22,7 +20,7 @@ pub fn run_timer(config: Config, running: Arc<AtomicBool>) {
         let running_clone = running.clone();
         let handle = thread::spawn(move || {
             while playing_clone.load(Ordering::SeqCst) && running_clone.load(Ordering::SeqCst) {
-                if let Err(e) = crate::sound::play_sound() {
+                if let Err(e) = crate::sound::play_sound(playing_clone.clone()) {
                     eprintln!("Ошибка при воспроизведении звука: {}", e);
                 }
                 thread::sleep(Duration::from_secs(5));
