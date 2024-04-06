@@ -23,13 +23,16 @@ pub fn run_timer(config: Config, running: Arc<AtomicBool>, playing: Arc<AtomicBo
                 if let Err(e) = crate::sound::play_sound(playing_clone.clone()) {
                     eprintln!("Ошибка при воспроизведении звука: {}", e);
                 }
-                thread::sleep(Duration::from_secs(1));
+                thread::sleep(Duration::from_secs(2));
             }
         });
 
-        println!("Нажмите Enter, чтобы остановить воспроизведение...");
+        println!("Введите 'break', чтобы остановить воспроизведение...");
         let mut input = String::new();
-        io::stdin().read_line(&mut input).expect("Ошибка при чтении строки");
+        while input.trim() != "break" {
+            input.clear(); // Очищаем строку перед повторным чтением ввода
+            io::stdin().read_line(&mut input).expect("Ошибка при чтении строки");
+        }
         playing.store(false, Ordering::SeqCst);
 
         handle.join().unwrap();
